@@ -3,7 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista Inteligente de Compras - Organize suas Compras</title>
+    
+    <!-- Habilita o cache agressivo para navegadores e melhora a indexação -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO: Meta Tags Estruturais Avançadas para o Google -->
+    <title>Lista de Compras de Mercado Inteligente - Calcule seu Carrinho</title>
+    <meta name="description" content="Organize sua lista de supermercado, registre preços automaticamente e acompanhe o valor total do carrinho em tempo real. Aplicativo de mercado offline e gratuito.">
+    <meta name="keywords" content="lista de compras mercado, lista de supermercado inteligente, calcular carrinho de compras, aplicativo de compras offline, organizar lista de mercado">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Rogério Pixel">
+    
+    <!-- SEO: Open Graph (Para ficar bonito se você compartilhar no WhatsApp/Redes Sociais) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Lista de Compras de Mercado Inteligente">
+    <meta property="og:description" content="Esqueça o papel. Esboce sua lista de supermercado e acompanhe os gastos em tempo real com memória de preços automática.">
+    <meta property="og:image" content="icon-512x512.png">
+
+    <!-- ================================================================= -->
+    <!-- DADOS ESTRUTURADOS (SCHEMA JSON-LD) - O "CÓDIGO SECRETO" DO GOOGLE -->
+    <!-- Explica diretamente para o algoritmo que o site é uma Web App Útil -->
+    <!-- ================================================================= -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Lista de Compras de Mercado Inteligente",
+      "alternateName": "Lista Inteligente",
+      "description": "Uma aplicação web leve e offline para organizar listas de supermercado, registrar o histórico de preços e somar os valores do carrinho em tempo real.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires HTML5 support",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "BRL"
+      },
+      "featureList": [
+        "Organização em ordem alfabética automática",
+        "Memória inteligente de preços anteriores",
+        "Cálculo do carrinho de compras em tempo real",
+        "Histórico de gastos mensais",
+        "Funcionamento 100% offline com backup seguro"
+      ]
+    }
+    </script>
+
     <style>
         :root {
             --bg-color: #121212;
@@ -40,19 +85,25 @@
 
         header {
             text-align: center;
-            margin: 25px 0 15px 0;
+            margin: 30px 0 20px 0;
         }
 
         header h1 {
-            font-size: 1.8rem;
+            font-size: 1.9rem;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             letter-spacing: 0.5px;
+            color: #ffffff; /* Título em branco puro para maior destaque */
         }
 
+        /* Subtítulo Otimizado e com Maior Destaque */
         header p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
+            color: #f0f0f0; 
+            font-size: 1.05rem;
+            font-weight: 400;
+            max-width: 90%;
+            margin: 0 auto;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
 
         .btn-primary {
@@ -62,32 +113,37 @@
             color: #ffffff;
             text-align: center;
             text-decoration: none;
-            padding: 15px;
+            padding: 16px;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             margin: 20px 0;
-            transition: background 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.2);
         }
 
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
+        .btn-primary:active {
+            transform: scale(0.98);
         }
 
-        /* Bloco Placeholder do AdSense (Estilo Caixa Geral de Boas-Vindas) */
+        /* Bloco Placeholder do AdSense - Desenhado com Destaque e Proteção contra Caracteres Quebrados */
         .adsense-placeholder {
             background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--primary-color); /* Borda verde combinando com o botão principal */
             border-radius: 8px;
-            padding: 15px;
+            padding: 18px;
             text-align: center;
             margin-bottom: 25px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
         }
 
-        /* Seções Estruturadas (Estilo Padrão dos seus Apps) */
+        .adsense-placeholder p {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        /* Seções Estruturadas (Estilo Padrão Rogério Pixel) */
         section {
             margin-bottom: 25px;
         }
@@ -97,7 +153,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--text-secondary);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             padding-left: 5px;
         }
 
@@ -157,11 +213,12 @@
         .tip-box {
             background-color: var(--surface-color);
             border-left: 4px solid var(--accent-color);
-            padding: 12px 15px;
+            padding: 14px 15px;
             border-radius: 0 8px 8px 0;
             margin-top: 15px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--text-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         /* Carrossel de Afiliados Horizontal */
@@ -184,7 +241,7 @@
         }
 
         .card-affiliate {
-            flex: 0 0 75%;
+            flex: 0 0 78%;
             scroll-snap-align: start;
             background-color: var(--surface-color);
             border: 1px solid var(--border-color);
@@ -195,13 +252,15 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 110px;
+            min-height: 115px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .card-title {
             font-size: 0.95rem;
             font-weight: 600;
             margin-bottom: 5px;
+            color: #ffffff;
         }
 
         .card-desc {
@@ -217,13 +276,26 @@
             margin-top: 10px;
         }
 
+        /* Segundo Bloco AdSense Inferior */
+        .adsense-inferior {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
         footer {
             text-align: center;
-            margin: 30px 0 15px 0;
+            margin: 35px 0 15px 0;
             font-size: 0.8rem;
             color: var(--text-secondary);
             border-top: 1px solid var(--border-color);
             padding-top: 15px;
+            width: 100%;
         }
 
         footer a {
@@ -240,23 +312,23 @@
 <body>
 
     <header>
-        <h1>Lista Inteligente</h1>
-        <p>Esqueça o bloco de notas e as listas em papel. Tudo na tela do seu celular.</p>
+        <h1>Lista de Mercado Inteligente</h1>
+        <p>Esqueça o bloco de notas e as listas em papel. Tudo na tela do seu celular de forma simples.</p>
     </header>
 
     <main>
-        <!-- Link de Redirecionamento Direto para o seu Aplicativo Principal -->
-        <a href="https://rogerio-pixel.github.io/SUA-URL-DO-APLICATIVO-AQUI/" class="btn-primary">
+        <!-- Link de Redirecionamento Corrigido para Rodar no Mesmo Repositório -->
+        <a href="app.html" class="btn-primary">
             🚀 ABRIR APLICATIVO GRATUITO
         </a>
 
-        <!-- Placeholder Superior do AdSense (Espaço de Boas-Vindas) -->
+        <!-- Bloco de Boas-Vindas Otimizado (Futuro Espaço Superior AdSense) -->
         <div class="adsense-placeholder">
-            <p>📝 Planejar suas compras é o primeiro passo para economizar. Toque no botão acima para iniciar!</p>
-            <!-- Quando o AdSense for aprovado, substitua o parágrafo acima pelo código <ins> do Google -->
+            <p>📝 Planejar suas compras é o primeiro passo para economizar. Toque no botão acima para abrir o seu organizador!</p>
+            <!-- Quando for aprovado no AdSense, apague o <p> acima e insira o código de anúncio do Google aqui -->
         </div>
 
-        <!-- Seção Manual de Uso (Acordeão Retrátil) -->
+        <!-- Seção Manual de Uso Semântica (Excelente para coletar Featured Snippets no Google) -->
         <section>
             <h2>❓ Como usar este aplicativo</h2>
             <div class="accordion">
@@ -298,19 +370,19 @@
 
             </div>
 
-            <!-- Caixa de Destaque com o seu conselho de uso -->
+            <!-- Caixa de Destaque (Aviso de valor agregado) -->
             <div class="tip-box">
-                <strong>💡 Dica:</strong> Quanto mais você utilizar o aplicativo, mais precisas serão as sugestões de preços e quantidades para as suas próximas compras.
+                <strong>💡 Dica de Economia:</strong> Quanto mais você utilizar o aplicativo, mais precisas serão as sugestões de preços e quantidades para as suas próximas compras.
             </div>
         </section>
 
-        <!-- Seção de Recursos e Achadinhos (Carrossel de Afiliados) -->
+        <!-- Seção de Monetização por Afiliados (Carrossel Nativo Super Leve) -->
         <section>
-            <h2>📚 Recursos Recomendados</h2>
+            <h2>📚 Recursos e Utensílios Recomendados</h2>
             <div class="carousel-container">
                 
                 <!-- Card Afiliado 1 -->
-                <a href="URL_AFILIADO_SHOPEE_AQUI" target="_blank" class="card-affiliate">
+                <a href="SEU_LINK_DE_AFILIADO_AQUI" target="_blank" class="card-affiliate">
                     <div>
                         <div class="card-title">Achadinhos de Cozinha</div>
                         <div class="card-desc">Organizadores e utensílios práticos em oferta na Shopee.</div>
@@ -319,7 +391,7 @@
                 </a>
 
                 <!-- Card Afiliado 2 -->
-                <a href="URL_AFILIADO_AMAZON_AQUI" target="_blank" class="card-affiliate">
+                <a href="SEU_LINK_DE_AFILIADO_AQUI" target="_blank" class="card-affiliate">
                     <div>
                         <div class="card-title">Organizadores de Despensa</div>
                         <div class="card-desc">Deixe seus armários arrumados de forma inteligente.</div>
@@ -328,10 +400,10 @@
                 </a>
 
                 <!-- Card Afiliado 3 -->
-                <a href="URL_AFILIADO_LIVROS_AQUI" target="_blank" class="card-affiliate">
+                <a href="SEU_LINK_DE_AFILIADO_AQUI" target="_blank" class="card-affiliate">
                     <div>
-                        <div class="card-title">Economia Doméstica</div>
-                        <div class="card-desc">Livros recomendados para otimizar o orçamento mensal.</div>
+                        <div class="card-title">Livros de Economia Doméstica</div>
+                        <div class="card-desc">Obras recomendadas para otimizar o orçamento familiar mensal.</div>
                     </div>
                     <div class="card-action">Ver Livros ➔</div>
                 </a>
@@ -340,27 +412,26 @@
         </section>
 
         <!-- Segundo Bloco Placeholder do AdSense (Fim de Página) -->
-        <div class="adsense-placeholder" style="margin-top: 10px;">
+        <div class="adsense-inferior">
             <p>📢 Espaço Publicitário</p>
         </div>
     </main>
 
     <footer>
         <p>© 2026 Lista Inteligente. Todos os direitos reservados.</p>
-        <p style="margin-top: 8px;">
-            <a href="politica.html">Política de Privacidade</a> | 
-            <a href="https://rogerio-pixel.github.io/SUA-URL-DO-APLICATIVO-AQUI/">Abrir App</a>
+        <p style="margin-top: 10px;">
+            <a href="privacidade.html">Política de Privacidade</a> | 
+            <a href="app.html">Abrir App</a>
         </p>
     </footer>
 
-    <!-- Lógica Interativa Exclusiva do Acordeão (Sem bibliotecas pesadas) -->
+    <!-- Lógica Interativa Nativa para o Acordeão -->
     <script>
         document.querySelectorAll('.accordion-header').forEach(button => {
             button.addEventListener('click', () => {
                 const item = button.parentElement;
                 const content = button.nextElementSibling;
                 
-                // Fecha outros itens abertos (opcional, para comportamento sanfona limpo)
                 document.querySelectorAll('.accordion-item').forEach(otherItem => {
                     if (otherItem !== item && otherItem.classList.contains('active')) {
                         otherItem.classList.remove('active');
@@ -369,7 +440,6 @@
                     }
                 });
 
-                // Alterna o estado do item clicado
                 item.classList.toggle('active');
                 
                 if (item.classList.contains('active')) {
@@ -384,3 +454,4 @@
     </script>
 </body>
 </html>
+
