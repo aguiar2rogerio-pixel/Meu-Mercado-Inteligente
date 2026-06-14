@@ -32,7 +32,7 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            overflow-y: auto; /* Permite a rolagem natural no celular */
+            overflow-y: auto; /* Permite a rolagem fluida e natural do telemóvel */
         }
 
         header {
@@ -44,17 +44,36 @@
             z-index: 10;
         }
 
+        .header-title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
         h1 {
             margin: 0;
             font-size: 1.2rem;
             font-weight: 600;
+            flex: 1;
+            text-align: center;
+        }
+
+        /* Botão de instalação recuperado e estilizado elegantemente */
+        #installApp {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            padding: 4px 8px;
+            cursor: pointer;
+            display: none; /* Aparece via JavaScript quando o PWA estiver pronto */
         }
 
         .input-group {
             position: relative;
             display: flex;
             gap: 8px;
-            margin-top: 12px;
         }
 
         input[type="text"] {
@@ -108,7 +127,7 @@
 
         main {
             padding: 16px;
-            padding-bottom: 240px; /* Espaço gigante no fim para a rolagem passar livre pelos botões fixos */
+            padding-bottom: 260px; /* Garante que todo o conteúdo suba além do rodapé fixo */
         }
 
         section {
@@ -201,6 +220,14 @@
             margin-bottom: 12px;
             -webkit-overflow-scrolling: touch;
         }
+        
+        .month-pills::-webkit-scrollbar {
+            height: 4px;
+        }
+        .month-pills::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 2px;
+        }
 
         .pill {
             background-color: #2c2c2c;
@@ -286,6 +313,11 @@
             max-width: 400px;
         }
 
+        .modal-title {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
         .form-row {
             margin-bottom: 16px;
         }
@@ -343,6 +375,10 @@
             cursor: pointer;
         }
 
+        .history-item:active {
+            background-color: #2c2c2c;
+        }
+
         .monthly-summary {
             background-color: #2c2c2c;
             padding: 14px;
@@ -355,11 +391,12 @@
             display: flex;
             gap: 8px;
             margin-top: 8px;
-            margin-bottom: 16px; 
+            margin-bottom: 24px; 
         }
 
+        /* CSS elegante para a CTA integrada ao tema */
         .cta-retorno-container {
-            margin-top: 24px;
+            margin-top: 32px;
             margin-bottom: 16px;
             width: 100%;
         }
@@ -376,7 +413,12 @@
             font-size: 0.9rem;
             font-weight: 500;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+
+        .cta-retorno-link:active {
+            transform: scale(0.98);
         }
 
         .history-preview-list {
@@ -393,23 +435,17 @@
             font-size: 0.9rem;
         }
 
-        #installApp {
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: var(--primary-color);
-            font-size: 1.3rem;
-            padding: 4px 8px;
+        .history-preview-row span {
+            color: var(--text-secondary);
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div style="width: 32px;"></div> <!-- Equilíbrio estético -->
-        <h1>Lista de Compras</h1>
-        <button id="installApp" style="display: none;">📥</button>
+    <div class="header-title-container">
+        <div style="width: 36px;"></div> <h1>Lista de Compras</h1>
+        <button id="installApp" title="Baixar Aplicativo">📥</button>
     </div>
     <div class="input-group">
         <input type="text" id="itemInput" placeholder="Adicionar item (ex: Leite)" autocomplete="off">
@@ -437,7 +473,9 @@
 
     <section id="section-history">
         <h2>Histórico por Mês</h2>
+        
         <div class="month-pills" id="monthPillsContainer"></div>
+
         <div id="history-container"></div>
         
         <div class="monthly-summary" id="monthly-summary">
@@ -448,7 +486,7 @@
         </div>
 
         <div class="backup-controls">
-            <button class="btn-cancel" id="btnBackup" style="font-size: 0.85rem; padding: 10px;">💾 Backup</button>
+            <button class="btn-cancel" id="btnBackup" style="font-size: 0.85rem; padding: 10px;">💾 Criar Backup</button>
             <button class="btn-cancel" id="btnRestore" style="font-size: 0.85rem; padding: 10px;">🔄 Restaurar</button>
         </div>
 
@@ -459,7 +497,7 @@
         </div>
 
         <div style="text-align: center; padding: 16px 0;">
-            <a href="privacidade.html" style="font-size: 10px; color: #555; text-decoration: underline; text-transform: uppercase;">
+            <a href="privacidade.html" style="font-size: 10px; color: #555; text-decoration: underline; text-transform: uppercase; letter-spacing: 1px;">
                 Política de Privacidade
             </a>
         </div>
@@ -478,23 +516,26 @@
         </div>
     </div>
     <button class="btn-finish" id="btnFinish">Finalizar Compra</button>
-    <button id="btnResetApp" style="background: none; border: 1px solid var(--danger-color); color: var(--danger-color); border-radius: 8px; padding: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 4px; opacity: 0.4;">RESET TOTAL DO APLICATIVO</button>
+    <button id="btnResetApp" style="background: none; border: 1px solid var(--danger-color); color: var(--danger-color); border-radius: 8px; padding: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 4px; opacity: 0.5;">ZERAR APLICATIVO (RESET TOTAL)</button>
 </footer>
 
 <div class="modal-overlay" id="modalEdit">
     <div class="modal">
-        <h3 id="editTitle" style="margin-top:0;">Editar Item</h3>
+        <h3 class="modal-title" id="editTitle">Editar Item</h3>
         <div class="form-row">
             <label>Tipo</label>
-            <select id="editType"><option value="un">Unidade (un)</option><option value="kg">Peso (kg)</option></select>
+            <select id="editType">
+                <option value="un">Unidade (un)</option>
+                <option value="kg">Peso (kg)</option>
+            </select>
         </div>
         <div class="form-row">
-            <label>Quantidade</label>
-            <input type="text" id="editQty">
+            <label id="labelQty">Quantidade / Peso</label>
+            <input type="text" id="editQty" placeholder="Ex: 2 ou 0.500">
         </div>
         <div class="form-row">
             <label>Preço (R$)</label>
-            <input type="number" id="editPrice" step="0.01">
+            <input type="number" id="editPrice" step="0.01" placeholder="0,00">
         </div>
         <div class="modal-btns">
             <button class="btn-cancel" id="btnCancelEdit">Cancelar</button>
@@ -505,168 +546,504 @@
 
 <div class="modal-overlay" id="modalHistoryView">
     <div class="modal">
-        <h3 id="historyViewTitle" style="margin-top:0;">Itens</h3>
+        <h3 class="modal-title" id="historyViewTitle">Itens da Compra</h3>
         <div class="history-preview-list" id="historyViewList"></div>
-        <div style="display: flex; justify-content: space-between; border-top: 1px dashed #444; padding-top:10px;">
-            <span>Total:</span><b id="historyViewTotal">R$ 0,00</b>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-top: 10px; border-top: 2px dashed #444;">
+            <span>Total:</span>
+            <b id="historyViewTotal" style="color: var(--primary-color); font-size: 1.1rem;">R$ 0,00</b>
         </div>
-        <button class="btn-cancel" id="btnCloseHistoryView" style="width: 100%; margin-top:15px;">Fechar</button>
+        <button class="btn-cancel" id="btnCloseHistoryView" style="width: 100%;">Fechar</button>
     </div>
 </div>
 
 <script>
-    let state = { items: [], history: [], itemBank: {}, selectedMonthYear: "" };
+    let state = {
+        items: [], 
+        history: [], 
+        itemBank: {},
+        selectedMonthYear: ""
+    };
+
     const STORAGE_KEY = 'smart_shopping_list_v6';
-    const MONTH_NAMES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+    const MONTH_NAMES = [
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
 
     async function init() {
-        let saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) { try { state = JSON.parse(saved); } catch (e) {} }
+        if (navigator.storage && navigator.storage.persist) {
+            await navigator.storage.persist();
+        }
+
+        let saved = localStorage.getItem(STORAGE_KEY) || 
+                    localStorage.getItem('smart_shopping_list_v5') ||
+                    localStorage.getItem('smart_shopping_list_v4') ||
+                    localStorage.getItem('smart_shopping_list_v3') || 
+                    localStorage.getItem('smart_shopping_list_v2') || 
+                    localStorage.getItem('smart_shopping_list_v1');
+                    
+        if (saved) {
+            try {
+                state = JSON.parse(saved);
+            } catch (e) {
+                console.error("Erro ao carregar dados:", e);
+            }
+        }
+
         if (!state.selectedMonthYear) {
             const now = new Date();
-            state.selectedMonthYear = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            state.selectedMonthYear = `${m}/${now.getFullYear()}`;
         }
+
         render();
         setupEventListeners();
-        setupInstallation();
+        setupPWAInstallation(); // Ativa o monitor do instalador
     }
 
-    function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    function save() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
 
     function addItem(name) {
         if (!name.trim()) return;
-        const price = state.itemBank[name.toLowerCase()] || 0;
-        state.items.push({ id: Date.now(), name: name.trim(), qty: 1, type: 'un', price: price, checked: false });
-        save(); render();
+        
+        const lastPrice = state.itemBank[name.toLowerCase()] || 0;
+        const newItem = {
+            id: Date.now(),
+            name: name.trim(),
+            qty: 1,
+            type: 'un',
+            price: lastPrice,
+            checked: false,
+            lastPrice: lastPrice
+        };
+        
+        state.items.push(newItem);
+        save();
+        render();
+    }
+
+    function parseWeight(val) {
+        let num = parseFloat(val.toString().replace(',', '.'));
+        if (isNaN(num)) return 0;
+        if (val.toString().toLowerCase().includes('g') || (num >= 5 && !val.toString().includes('.'))) {
+            return num / 1000;
+        }
+        return num;
     }
 
     function updateItem(id, updates) {
         const idx = state.items.findIndex(i => i.id === id);
         if (idx !== -1) {
+            if (updates.qty !== undefined && state.items[idx].type === 'kg') {
+                updates.qty = parseWeight(updates.qty);
+            }
             state.items[idx] = { ...state.items[idx], ...updates };
-            if (updates.price !== undefined) state.itemBank[state.items[idx].name.toLowerCase()] = updates.price;
-            save(); render();
+            
+            if (updates.price !== undefined) {
+                state.itemBank[state.items[idx].name.toLowerCase()] = updates.price;
+            }
+            
+            save();
+            render();
         }
     }
 
     function toggleItem(id) {
         const item = state.items.find(i => i.id === id);
-        if (item) { item.checked = !item.checked; if (item.checked) openEditModal(id); save(); render(); }
+        if (item) {
+            item.checked = !item.checked;
+            if (item.checked) {
+                openEditModal(id);
+            }
+            save();
+            render();
+        }
     }
 
-    function deleteItem(id) { state.items = state.items.filter(i => i.id !== id); save(); render(); }
+    function deleteItem(id) {
+        state.items = state.items.filter(i => i.id !== id);
+        save();
+        render();
+    }
 
     function finishPurchase() {
-        const realTotal = state.items.filter(i => i.checked).reduce((acc, i) => acc + (i.qty * i.price), 0);
-        const checked = state.items.filter(i => i.checked);
-        if (checked.length > 0) {
-            state.history.unshift({ id: Date.now(), date: new Date().toLocaleDateString('pt-BR'), total: realTotal, items: checked });
-            state.items = state.items.filter(i => !i.checked);
-            save(); render(); alert('Compra salva!');
+        const realTotal = calculateRealTotal();
+        const checkedItems = state.items.filter(i => i.checked);
+
+        if (realTotal > 0 || checkedItems.length > 0) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('pt-BR');
+            
+            const itemsToSave = checkedItems.map(i => ({
+                name: i.name,
+                qty: i.qty,
+                type: i.type,
+                price: i.price
+            }));
+
+            state.history.unshift({ 
+                id: Date.now(), 
+                date: dateStr, 
+                total: realTotal,
+                items: itemsToSave 
+            });
+            
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            state.selectedMonthYear = `${m}/${now.getFullYear()}`;
+            
+            state.items = state.items.filter(i => !i.checked).map(i => ({
+                ...i,
+                price: state.itemBank[i.name.toLowerCase()] || 0
+            }));
+            
+            save();
+            render();
+            alert('Compra finalizada com sucesso!');
         }
+    }
+
+    function calculateEstimatedTotal() {
+        return state.items
+            .filter(i => !i.checked)
+            .reduce((acc, i) => acc + (i.qty * (i.price > 0 ? i.price : (i.lastPrice || 0))), 0);
+    }
+
+    function calculateRealTotal() {
+        return state.items
+            .filter(i => i.checked)
+            .reduce((acc, i) => acc + (i.qty * (i.price || 0)), 0);
+    }
+
+    function getMonthYearFromKey(dateStr) {
+        if (!dateStr) return "";
+        const parts = dateStr.split('/');
+        if (parts.length < 3) return "";
+        return `${parts[1]}/${parts[2]}`;
     }
 
     function render() {
-        const todo = document.getElementById('list-todo');
-        const cart = document.getElementById('list-cart');
-        todo.innerHTML = ''; cart.innerHTML = '';
-        let tCount = 0, cCount = 0, est = 0, real = 0;
+        const listTodo = document.getElementById('list-todo');
+        const listCart = document.getElementById('list-cart');
+        const historyContainer = document.getElementById('history-container');
+        const pillsContainer = document.getElementById('monthPillsContainer');
+        
+        listTodo.innerHTML = '';
+        listCart.innerHTML = '';
+        
+        let todoCount = 0;
+        let cartCount = 0;
 
         state.items.forEach(item => {
-            const sub = item.qty * item.price;
-            const div = document.createElement('div');
-            div.className = `list-item ${item.checked ? 'checked' : ''}`;
-            div.innerHTML = `
-                <div class="checkbox ${item.checked ? 'checked' : ''}" onclick="event.stopPropagation(); toggleItem(${item.id})"></div>
-                <div class="item-info" onclick="openEditModal(${item.id})">
-                    <span class="item-name">${item.name}</span>
-                    <span class="item-details">${item.qty} ${item.type} x R$ ${item.price.toFixed(2)} = R$ ${sub.toFixed(2)}</span>
-                </div>
-                <button class="btn-icon" onclick="event.stopPropagation(); deleteItem(${item.id})">✕</button>
-            `;
-            if (item.checked) { cCount++; cart.appendChild(div); real += sub; } 
-            else { tCount++; todo.appendChild(div); est += sub; }
+            if (item.checked) {
+                cartCount++;
+                listCart.appendChild(createItemElement(item, cartCount));
+            } else {
+                todoCount++;
+                listTodo.appendChild(createItemElement(item, todoCount));
+            }
         });
 
-        document.getElementById('count-todo').innerText = `${tCount} itens`;
-        document.getElementById('count-cart').innerText = `${cCount} itens`;
-        document.getElementById('val-estimated').innerText = `R$ ${est.toFixed(2).replace('.', ',')}`;
-        document.getElementById('val-real').innerText = `R$ ${real.toFixed(2).replace('.', ',')}`;
+        document.getElementById('count-todo').innerText = `${todoCount} ${todoCount === 1 ? 'item' : 'itens'}`;
+        document.getElementById('count-cart').innerText = `${cartCount} ${cartCount === 1 ? 'item' : 'itens'}`;
 
-        // Histórico Simplificado
-        const container = document.getElementById('history-container');
-        container.innerHTML = '';
-        let mTotal = 0;
+        document.getElementById('val-estimated').innerText = `R$ ${calculateEstimatedTotal().toFixed(2).replace('.', ',')}`;
+        document.getElementById('val-real').innerText = `R$ ${calculateRealTotal().toFixed(2).replace('.', ',')}`;
+
+        const monthMap = new Set();
+        const now = new Date();
+        const currentMY = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+        monthMap.add(currentMY);
+
         state.history.forEach(h => {
-            mTotal += h.total;
-            const d = document.createElement('div');
-            d.className = 'history-item';
-            d.innerHTML = `<span>📅 ${h.date}</span><b>R$ ${h.total.toFixed(2).replace('.', ',')}</b>`;
-            d.onclick = () => openHistoryViewModal(h);
-            container.appendChild(d);
+            const my = getMonthYearFromKey(h.date);
+            if (my) monthMap.add(my);
         });
-        document.getElementById('total-month').innerText = `R$ ${mTotal.toFixed(2).replace('.', ',')}`;
+
+        const sortedMonths = Array.from(monthMap).sort((a, b) => {
+            const [mA, aA] = a.split('/').map(Number);
+            const [mB, aB] = b.split('/').map(Number);
+            return (aB * 12 + mB) - (aA * 12 + mA);
+        });
+
+        pillsContainer.innerHTML = '';
+        sortedMonths.forEach(my => {
+            const [mStr, yStr] = my.split('/');
+            const monthIndex = parseInt(mStr, 10) - 1;
+            const labelText = `${MONTH_NAMES[monthIndex]} / ${yStr}`;
+
+            const button = document.createElement('button');
+            button.className = `pill ${state.selectedMonthYear === my ? 'active' : ''}`;
+            button.innerText = labelText;
+            button.onclick = () => {
+                state.selectedMonthYear = my;
+                save();
+                render();
+            };
+            pillsContainer.appendChild(button);
+        });
+
+        let totalSelectedMonth = 0;
+        historyContainer.innerHTML = '';
+
+        const filteredHistory = state.history.filter(h => getMonthYearFromKey(h.date) === state.selectedMonthYear);
+
+        filteredHistory.forEach(h => {
+            totalSelectedMonth += h.total;
+
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.innerHTML = `<span>📅 ${h.date}</span><b>R$ ${h.total.toFixed(2).replace('.', ',')}</b>`;
+            div.onclick = () => openHistoryViewModal(h);
+            historyContainer.appendChild(div);
+        });
+
+        if (filteredHistory.length === 0) {
+            historyContainer.innerHTML = `<div style="text-align:center; color:gray; padding:12px; font-size:0.85rem;">Nenhuma compra neste mês.</div>`;
+        }
+
+        const [selM, selY] = state.selectedMonthYear.split('/');
+        const activeMonthName = MONTH_NAMES[parseInt(selM, 10) - 1];
+        document.getElementById('label-total-month').innerText = `Total de ${activeMonthName}:`;
+        document.getElementById('total-month').innerText = `R$ ${totalSelectedMonth.toFixed(2).replace('.', ',')}`;
     }
 
-    let editId = null;
+    function createItemElement(item, index) {
+        const div = document.createElement('div');
+        div.className = `list-item ${item.checked ? 'checked' : ''}`;
+        
+        const subtext = item.type === 'un' 
+            ? `${item.qty} un x R$ ${item.price.toFixed(2)}`
+            : `${item.qty.toFixed(3)} kg x R$ ${item.price.toFixed(2)}`;
+
+        div.innerHTML = `
+            <div class="checkbox ${item.checked ? 'checked' : ''}" onclick="event.stopPropagation(); toggleItem(${item.id})"></div>
+            <div class="item-info" onclick="openEditModal(${item.id})">
+                <span class="item-name">${index}. ${item.name}</span>
+                <span class="item-details">${subtext} = R$ ${(item.qty * item.price).toFixed(2)}</span>
+            </div>
+            <div class="item-actions">
+                <button class="btn-icon" onclick="event.stopPropagation(); deleteItem(${item.id})">✕</button>
+            </div>
+        `;
+        return div;
+    }
+
+    let editingId = null;
+
     function openEditModal(id) {
-        editId = id; const item = state.items.find(i => i.id === id); if (!item) return;
+        editingId = id;
+        const item = state.items.find(i => i.id === id);
+        if (!item) return;
+
+        document.getElementById('editTitle').innerText = item.name;
         document.getElementById('editType').value = item.type;
-        document.getElementById('editQty').value = item.qty;
+        document.getElementById('editQty').value = item.type === 'kg' ? item.qty.toFixed(3) : item.qty;
         document.getElementById('editPrice').value = item.price || '';
+        
         document.getElementById('modalEdit').style.display = 'flex';
     }
 
-    function openHistoryViewModal(h) {
-        document.getElementById('historyViewTitle').innerText = `Compra ${h.date}`;
-        document.getElementById('historyViewTotal').innerText = `R$ ${h.total.toFixed(2)}`;
-        const list = document.getElementById('historyViewList'); list.innerHTML = '';
-        if(h.items) {
-            h.items.forEach(i => {
-                const r = document.createElement('div'); r.className = 'history-preview-row';
-                r.innerHTML = `<span>${i.name} (${i.qty}${i.type})</span><b>R$ ${(i.qty*i.price).toFixed(2)}</b>`;
-                list.appendChild(r);
+    function openHistoryViewModal(purchase) {
+        document.getElementById('historyViewTitle').innerText = `Compra de ${purchase.date}`;
+        document.getElementById('historyViewTotal').innerText = `R$ ${purchase.total.toFixed(2).replace('.', ',')}`;
+        
+        const listContainer = document.getElementById('historyViewList');
+        listContainer.innerHTML = '';
+
+        if (!purchase.items || purchase.items.length === 0) {
+            listContainer.innerHTML = `<div style="text-align:center; color:gray; padding:20px;">Esta compra não possui listagem de itens salva.</div>`;
+        } else {
+            purchase.items.forEach(i => {
+                const row = document.createElement('div');
+                row.className = 'history-preview-row';
+                const qtyFormatted = i.type === 'kg' ? i.qty.toFixed(3) : i.qty;
+                row.innerHTML = `
+                    <div><b>${i.name}</b><br><span>${qtyFormatted} ${i.type} x R$ ${i.price.toFixed(2).replace('.', ',')}</span></div>
+                    <div style="align-self: center;"><b>R$ ${(i.qty * i.price).toFixed(2).replace('.', ',')}</b></div>
+                `;
+                listContainer.appendChild(row);
             });
         }
+
         document.getElementById('modalHistoryView').style.display = 'flex';
     }
 
-    let defPrompt;
-    function setupInstallation() {
-        const btn = document.getElementById('installApp');
-        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); defPrompt = e; btn.style.display = 'block'; });
-        btn.onclick = async () => { if (defPrompt) { defPrompt.prompt(); const { outcome } = await defPrompt.userChoice; if (outcome === 'accepted') btn.style.display = 'none'; defPrompt = null; } };
+    // Gestão do gatilho de instalação PWA nativo
+    let deferredPrompt;
+    function setupPWAInstallation() {
+        const installBtn = document.getElementById('installApp');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (installBtn) installBtn.style.display = 'block'; // Mostra a seta no header
+        });
+
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        installBtn.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                }
+            });
+        }
     }
 
     function setupEventListeners() {
         const input = document.getElementById('itemInput');
-        document.getElementById('btnAdd').onclick = () => { addItem(input.value); input.value = ''; };
-        input.onkeyup = (e) => { if (e.key === 'Enter') { addItem(input.value); input.value = ''; } };
-        document.getElementById('btnCancelEdit').onclick = () => document.getElementById('modalEdit').style.display = 'none';
-        document.getElementById('btnSaveEdit').onclick = () => {
-            updateItem(editId, { type: document.getElementById('editType').value, qty: parseFloat(document.getElementById('editQty').value)||1, price: parseFloat(document.getElementById('editPrice').value)||0 });
+        const btnAdd = document.getElementById('btnAdd');
+        const suggestions = document.getElementById('suggestions');
+
+        btnAdd.onclick = () => {
+            addItem(input.value);
+            input.value = '';
+            suggestions.style.display = 'none';
+        };
+
+        input.onkeyup = (e) => {
+            if (e.key === 'Enter') {
+                btnAdd.onclick();
+                return;
+            }
+            
+            const val = input.value.toLowerCase();
+            if (val.length < 1) {
+                suggestions.style.display = 'none';
+                return;
+            }
+
+            const matches = Object.keys(state.itemBank).filter(name => name.includes(val));
+            if (matches.length > 0) {
+                suggestions.innerHTML = '';
+                matches.forEach(m => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.innerText = m;
+                    div.onclick = () => {
+                        input.value = m;
+                        suggestions.style.display = 'none';
+                        btnAdd.onclick();
+                    };
+                    suggestions.appendChild(div);
+                });
+                suggestions.style.display = 'block';
+            } else {
+                suggestions.style.display = 'none';
+            }
+        };
+
+        document.getElementById('btnCancelEdit').onclick = () => {
             document.getElementById('modalEdit').style.display = 'none';
         };
+
+        document.getElementById('btnSaveEdit').onclick = () => {
+            const type = document.getElementById('editType').value;
+            const qtyRaw = document.getElementById('editQty').value;
+            const price = parseFloat(document.getElementById('editPrice').value) || 0;
+            
+            updateItem(editingId, { type, qty: qtyRaw, price });
+            document.getElementById('modalEdit').style.display = 'none';
+        };
+
         document.getElementById('btnFinish').onclick = finishPurchase;
-        document.getElementById('btnCloseHistoryView').onclick = () => document.getElementById('modalHistoryView').style.display = 'none';
+
+        document.getElementById('btnCloseHistoryView').onclick = () => {
+            document.getElementById('modalHistoryView').style.display = 'none';
+        };
+
         document.getElementById('btnBackup').onclick = () => {
-            const blob = new Blob([JSON.stringify(state)], { type: "text/plain" });
-            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `backup.txt`; a.click();
+            try {
+                const dataStr = JSON.stringify(state, null, 2);
+                const blob = new Blob([dataStr], { type: "text/plain;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                
+                const now = new Date();
+                const dateStr = now.toISOString().split('T')[0];
+                const fileName = `backup_compras_${dateStr}.txt`;
+
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert(`Backup gerado com sucesso!\nArquivo:\n${fileName}`);
+            } catch (e) {
+                alert("Erro ao criar arquivo de backup.");
+            }
         };
+
         document.getElementById('btnRestore').onclick = () => {
-            const i = document.createElement('input'); i.type = 'file';
-            i.onchange = e => {
-                const r = new FileReader(); r.onload = ev => { try { state = JSON.parse(ev.target.result); save(); render(); alert("Restaurado!"); } catch(ex){} };
-                r.readAsText(e.target.files[0]);
+            const confirmRestore = confirm("Deseja realmente restaurar os dados deste arquivo? Isso substituirá a lista atual.");
+            if (!confirmRestore) return;
+
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.txt';
+            
+            fileInput.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        const decoded = JSON.parse(event.target.result);
+                        if (decoded && (decoded.items || decoded.history)) {
+                            state = decoded;
+                            if(!state.selectedMonthYear){
+                                const now = new Date();
+                                state.selectedMonthYear = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+                            }
+                            save();
+                            render();
+                            alert("Banco de dados sincronizado e restaurado com sucesso!");
+                        } else {
+                            throw new Error();
+                        }
+                    } catch (err) {
+                        alert("Arquivo de backup inválido ou corrompido.");
+                    }
+                };
+                reader.readAsText(file);
             };
-            i.click();
+            fileInput.click();
         };
-        document.getElementById('btnResetApp').onclick = () => { if(confirm("Resetar?") && confirm("Certeza?")) { localStorage.clear(); location.reload(); } };
+
+        document.getElementById('btnResetApp').onclick = () => {
+            const confirm1 = confirm("ATENÇÃO: Isso apagará TODOS os seus itens, histórico e banco de preços permanentemente. Deseja continuar?");
+            if (confirm1) {
+                const confirm2 = confirm("TEM CERTEZA? Esta ação não pode ser desfeita.");
+                if (confirm2) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    localStorage.removeItem('smart_shopping_list_v5');
+                    localStorage.removeItem('smart_shopping_list_v4');
+                    localStorage.removeItem('smart_shopping_list_v3');
+                    localStorage.removeItem('smart_shopping_list_v2');
+                    localStorage.removeItem('smart_shopping_list_v1');
+                    location.reload();
+                }
+            }
+        };
     }
 
     init();
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js').catch(err => console.log(err)); }
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('SW ativo com sucesso!', reg))
+        .catch(err => console.log('Erro ao registrar SW:', err));
+    }
 </script>
+
 </body>
 </html>
 
