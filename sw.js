@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shopping-list-v6';
+const CACHE_NAME = 'shopping-list-v7';
 const ASSETS = [
   'https://aguiar2rogerio-pixel.github.io/MERCADO-INTELIGENTE/',
   'https://aguiar2rogerio-pixel.github.io/MERCADO-INTELIGENTE/index.html',
