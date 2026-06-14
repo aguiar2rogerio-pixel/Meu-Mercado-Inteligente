@@ -1,10 +1,11 @@
 const CACHE_NAME = 'shopping-list-v6';
 const ASSETS = [
-  'https://aguiar2rogerio-pixel.github.io/MERCADO-INTELIGENTE/',
-  'https://aguiar2rogerio-pixel.github.io/MERCADO-INTELIGENTE/index.html',
-  'https://aguiar2rogerio-pixel.github.io/MERCADO-INTELIGENTE/manifest.json',
-  'https://aguiar2rogerio-pixel.github.io/MERCADO-INTELIGENTE/icon-192x192.png',
-  'https://aguiar2rogerio-pixel.github.io/MERCADO-INTELIGENTE/icon-512x512.png'
+  './',
+  './index.html',
+  './app.html',
+  './manifest.json',
+  './icon-192x192.png',
+  './icon-512x512.png'
 ];
 
 self.addEventListener('install', (e) => {
