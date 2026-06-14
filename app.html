@@ -374,7 +374,34 @@
             display: flex;
             gap: 8px;
             margin-top: 8px;
-            margin-bottom: 24px; 
+            margin-bottom: 16px; 
+        }
+
+        /* Estilos Exclusivos da Nova CTA Chiclete */
+        .cta-retorno-container {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .cta-retorno-link {
+            display: block;
+            background: linear-gradient(135deg, #1e1e1e 0%, #252525 100%);
+            border: 1px dashed var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        .cta-retorno-link:active {
+            transform: scale(0.98);
         }
 
         .history-preview-list {
@@ -441,6 +468,13 @@
         <div class="backup-controls">
             <button class="btn-cancel" id="btnBackup" style="font-size: 0.85rem; padding: 10px;">💾 Criar Backup</button>
             <button class="btn-cancel" id="btnRestore" style="font-size: 0.85rem; padding: 10px;">🔄 Restaurar</button>
+        </div>
+
+        <!-- Injeção Estratégica da CTA Chiclete de Afiliados -->
+        <div class="cta-retorno-container">
+            <a href="index.html" class="cta-retorno-link">
+                <span>💰 Economize mais: Veja os achadinhos e utilidades que separamos para você! ➔</span>
+            </a>
         </div>
     </section>
 </main>
@@ -953,7 +987,6 @@
 
     init();
 
-    // Vinculação limpa do Service Worker externo arquivo dedicado (sw.js)
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js')
         .then(reg => console.log('SW ativo com sucesso!', reg))
@@ -969,5 +1002,4 @@
         Política de Privacidade
     </a>
 </div>
-
 
