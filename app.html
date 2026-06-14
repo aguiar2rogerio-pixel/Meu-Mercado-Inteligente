@@ -31,31 +31,30 @@
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            height: -webkit-fill-available; /* Correção para travar a barra do Safari/Chrome Mobile */
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-y: auto; /* Permite a rolagem natural no celular */
         }
 
         header {
             padding: 16px;
             background-color: var(--surface-color);
             border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
             z-index: 10;
         }
 
         h1 {
-            margin: 0 0 12px 0;
+            margin: 0;
             font-size: 1.2rem;
             font-weight: 600;
-            text-align: center;
         }
 
         .input-group {
             position: relative;
             display: flex;
             gap: 8px;
+            margin-top: 12px;
         }
 
         input[type="text"] {
@@ -108,11 +107,8 @@
         }
 
         main {
-            flex: 1;
-            overflow-y: scroll; /* Força o comportamento de rolagem nativo do celular */
-            -webkit-overflow-scrolling: touch;
             padding: 16px;
-            padding-bottom: 220px; /* Aumentado para garantir que passe dos botões fixos */
+            padding-bottom: 240px; /* Espaço gigante no fim para a rolagem passar livre pelos botões fixos */
         }
 
         section {
@@ -205,14 +201,6 @@
             margin-bottom: 12px;
             -webkit-overflow-scrolling: touch;
         }
-        
-        .month-pills::-webkit-scrollbar {
-            height: 4px;
-        }
-        .month-pills::-webkit-scrollbar-thumb {
-            background: #444;
-            border-radius: 2px;
-        }
 
         .pill {
             background-color: #2c2c2c;
@@ -298,11 +286,6 @@
             max-width: 400px;
         }
 
-        .modal-title {
-            margin-top: 0;
-            margin-bottom: 16px;
-        }
-
         .form-row {
             margin-bottom: 16px;
         }
@@ -360,10 +343,6 @@
             cursor: pointer;
         }
 
-        .history-item:active {
-            background-color: #2c2c2c;
-        }
-
         .monthly-summary {
             background-color: #2c2c2c;
             padding: 14px;
@@ -379,10 +358,9 @@
             margin-bottom: 16px; 
         }
 
-        /* Ajuste do container da CTA para não sumir no mobile */
         .cta-retorno-container {
             margin-top: 24px;
-            margin-bottom: 32px; /* Garante folga extra no fim da rolagem */
+            margin-bottom: 16px;
             width: 100%;
         }
 
@@ -399,11 +377,6 @@
             font-weight: 500;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
-        }
-
-        .cta-retorno-link:active {
-            transform: scale(0.98);
         }
 
         .history-preview-list {
@@ -420,23 +393,23 @@
             font-size: 0.9rem;
         }
 
-        .history-preview-row span {
-            color: var(--text-secondary);
-        }
-
-        /* Estilo do Botão de Instalação (Seta) caso ele seja renderizado via ID */
         #installApp {
             cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            padding: 4px 8px;
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h1 style="margin: 0; flex: 1; text-align: center; padding-left: 32px;">Lista de Compras</h1>
-        <!-- Seta/Botão de Instalação PWA restaurado no topo direito se aplicável -->
-        <button id="installApp" style="display: none; background: none; border: none; color: var(--primary-color); font-size: 1.3rem; padding: 0 8px;">📥</button>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="width: 32px;"></div> <!-- Equilíbrio estético -->
+        <h1>Lista de Compras</h1>
+        <button id="installApp" style="display: none;">📥</button>
     </div>
     <div class="input-group">
         <input type="text" id="itemInput" placeholder="Adicionar item (ex: Leite)" autocomplete="off">
@@ -464,9 +437,7 @@
 
     <section id="section-history">
         <h2>Histórico por Mês</h2>
-        
         <div class="month-pills" id="monthPillsContainer"></div>
-
         <div id="history-container"></div>
         
         <div class="monthly-summary" id="monthly-summary">
@@ -477,20 +448,18 @@
         </div>
 
         <div class="backup-controls">
-            <button class="btn-cancel" id="btnBackup" style="font-size: 0.85rem; padding: 10px;">💾 Criar Backup</button>
+            <button class="btn-cancel" id="btnBackup" style="font-size: 0.85rem; padding: 10px;">💾 Backup</button>
             <button class="btn-cancel" id="btnRestore" style="font-size: 0.85rem; padding: 10px;">🔄 Restaurar</button>
         </div>
 
-        <!-- Injeção Estratégica da CTA Chiclete -->
         <div class="cta-retorno-container">
             <a href="index.html" class="cta-retorno-link">
                 <span>💰 Economize mais: Veja os achadinhos e utilidades que separamos para você! ➔</span>
             </a>
         </div>
 
-        <!-- Link de Privacidade dentro da área rolável para evitar quebras -->
         <div style="text-align: center; padding: 16px 0;">
-            <a href="privacidade.html" style="font-size: 10px; color: #555; text-decoration: underline; letter-spacing: 1px; text-transform: uppercase;">
+            <a href="privacidade.html" style="font-size: 10px; color: #555; text-decoration: underline; text-transform: uppercase;">
                 Política de Privacidade
             </a>
         </div>
@@ -509,26 +478,23 @@
         </div>
     </div>
     <button class="btn-finish" id="btnFinish">Finalizar Compra</button>
-    <button id="btnResetApp" style="background: none; border: 1px solid var(--danger-color); color: var(--danger-color); border-radius: 8px; padding: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 4px; opacity: 0.5;">ZERAR APLICATIVO (RESET TOTAL)</button>
+    <button id="btnResetApp" style="background: none; border: 1px solid var(--danger-color); color: var(--danger-color); border-radius: 8px; padding: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 4px; opacity: 0.4;">RESET TOTAL DO APLICATIVO</button>
 </footer>
 
 <div class="modal-overlay" id="modalEdit">
     <div class="modal">
-        <h3 class="modal-title" id="editTitle">Editar Item</h3>
+        <h3 id="editTitle" style="margin-top:0;">Editar Item</h3>
         <div class="form-row">
             <label>Tipo</label>
-            <select id="editType">
-                <option value="un">Unidade (un)</option>
-                <option value="kg">Peso (kg)</option>
-            </select>
+            <select id="editType"><option value="un">Unidade (un)</option><option value="kg">Peso (kg)</option></select>
         </div>
         <div class="form-row">
-            <label id="labelQty">Quantidade / Peso</label>
-            <input type="text" id="editQty" placeholder="Ex: 2 ou 0.500">
+            <label>Quantidade</label>
+            <input type="text" id="editQty">
         </div>
         <div class="form-row">
             <label>Preço (R$)</label>
-            <input type="number" id="editPrice" step="0.01" placeholder="0,00">
+            <input type="number" id="editPrice" step="0.01">
         </div>
         <div class="modal-btns">
             <button class="btn-cancel" id="btnCancelEdit">Cancelar</button>
@@ -539,73 +505,44 @@
 
 <div class="modal-overlay" id="modalHistoryView">
     <div class="modal">
-        <h3 class="modal-title" id="historyViewTitle">Itens da Compra</h3>
+        <h3 id="historyViewTitle" style="margin-top:0;">Itens</h3>
         <div class="history-preview-list" id="historyViewList"></div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-top: 10px; border-top: 2px dashed #444;">
-            <span>Total:</span>
-            <b id="historyViewTotal" style="color: var(--primary-color); font-size: 1.1rem;">R$ 0,00</b>
+        <div style="display: flex; justify-content: space-between; border-top: 1px dashed #444; padding-top:10px;">
+            <span>Total:</span><b id="historyViewTotal">R$ 0,00</b>
         </div>
-        <button class="btn-cancel" id="btnCloseHistoryView" style="width: 100%;">Fechar</button>
+        <button class="btn-cancel" id="btnCloseHistoryView" style="width: 100%; margin-top:15px;">Fechar</button>
     </div>
 </div>
 
 <script>
-    let state = {
-        items: [], 
-        history: [], 
-        itemBank: {},
-        selectedMonthYear: ""
-    };
-
+    let state = { items: [], history: [], itemBank: {}, selectedMonthYear: "" };
     const STORAGE_KEY = 'smart_shopping_list_v6';
     const MONTH_NAMES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
     async function init() {
-        if (navigator.storage && navigator.storage.persist) {
-            await navigator.storage.persist();
-        }
-
-        let saved = localStorage.getItem(STORAGE_KEY) || 
-                    localStorage.getItem('smart_shopping_list_v5') ||
-                    localStorage.getItem('smart_shopping_list_v4') ||
-                    localStorage.getItem('smart_shopping_list_v3');
-                    
-        if (saved) {
-            try { state = JSON.parse(saved); } catch (e) { console.error(e); }
-        }
-
+        let saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) { try { state = JSON.parse(saved); } catch (e) {} }
         if (!state.selectedMonthYear) {
             const now = new Date();
             state.selectedMonthYear = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
         }
-
         render();
         setupEventListeners();
-        setupInstallationTrigger(); // Ativa escuta para a seta de instalação
+        setupInstallation();
     }
 
     function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
     function addItem(name) {
         if (!name.trim()) return;
-        const lastPrice = state.itemBank[name.toLowerCase()] || 0;
-        state.items.push({
-            id: Date.now(), name: name.trim(), qty: 1, type: 'un', price: lastPrice, checked: false, lastPrice: lastPrice
-        });
+        const price = state.itemBank[name.toLowerCase()] || 0;
+        state.items.push({ id: Date.now(), name: name.trim(), qty: 1, type: 'un', price: price, checked: false });
         save(); render();
-    }
-
-    function parseWeight(val) {
-        let num = parseFloat(val.toString().replace(',', '.'));
-        if (isNaN(num)) return 0;
-        if (val.toString().toLowerCase().includes('g') || (num >= 5 && !val.toString().includes('.'))) return num / 1000;
-        return num;
     }
 
     function updateItem(id, updates) {
         const idx = state.items.findIndex(i => i.id === id);
         if (idx !== -1) {
-            if (updates.qty !== undefined && state.items[idx].type === 'kg') updates.qty = parseWeight(updates.qty);
             state.items[idx] = { ...state.items[idx], ...updates };
             if (updates.price !== undefined) state.itemBank[state.items[idx].name.toLowerCase()] = updates.price;
             save(); render();
@@ -614,203 +551,121 @@
 
     function toggleItem(id) {
         const item = state.items.find(i => i.id === id);
-        if (item) {
-            item.checked = !item.checked;
-            if (item.checked) openEditModal(id);
-            save(); render();
-        }
+        if (item) { item.checked = !item.checked; if (item.checked) openEditModal(id); save(); render(); }
     }
 
     function deleteItem(id) { state.items = state.items.filter(i => i.id !== id); save(); render(); }
 
     function finishPurchase() {
-        const realTotal = calculateRealTotal();
-        const checkedItems = state.items.filter(i => i.checked);
-        if (realTotal > 0 || checkedItems.length > 0) {
-            const now = new Date();
-            state.history.unshift({ 
-                id: Date.now(), date: now.toLocaleDateString('pt-BR'), total: realTotal,
-                items: checkedItems.map(i => ({ name: i.name, qty: i.qty, type: i.type, price: i.price }))
-            });
-            state.selectedMonthYear = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-            state.items = state.items.filter(i => !i.checked).map(i => ({ ...i, price: state.itemBank[i.name.toLowerCase()] || 0 }));
-            save(); render(); alert('Compra finalizada!');
+        const realTotal = state.items.filter(i => i.checked).reduce((acc, i) => acc + (i.qty * i.price), 0);
+        const checked = state.items.filter(i => i.checked);
+        if (checked.length > 0) {
+            state.history.unshift({ id: Date.now(), date: new Date().toLocaleDateString('pt-BR'), total: realTotal, items: checked });
+            state.items = state.items.filter(i => !i.checked);
+            save(); render(); alert('Compra salva!');
         }
     }
 
-    function calculateEstimatedTotal() { return state.items.filter(i => !i.checked).reduce((acc, i) => acc + (i.qty * (i.price > 0 ? i.price : (i.lastPrice || 0))), 0); }
-    function calculateRealTotal() { return state.items.filter(i => i.checked).reduce((acc, i) => acc + (i.qty * (i.price || 0)), 0); }
-    function getMonthYearFromKey(dateStr) { if (!dateStr) return ""; const parts = dateStr.split('/'); return `${parts[1]}/${parts[2]}`; }
-
     function render() {
-        const listTodo = document.getElementById('list-todo');
-        const listCart = document.getElementById('list-cart');
-        const historyContainer = document.getElementById('history-container');
-        const pillsContainer = document.getElementById('monthPillsContainer');
-        
-        listTodo.innerHTML = ''; listCart.innerHTML = '';
-        let todoCount = 0, cartCount = 0;
+        const todo = document.getElementById('list-todo');
+        const cart = document.getElementById('list-cart');
+        todo.innerHTML = ''; cart.innerHTML = '';
+        let tCount = 0, cCount = 0, est = 0, real = 0;
 
         state.items.forEach(item => {
-            if (item.checked) { cartCount++; listCart.appendChild(createItemElement(item, cartCount)); }
-            else { todoCount++; listTodo.appendChild(createItemElement(item, todoCount)); }
-        });
-
-        document.getElementById('count-todo').innerText = `${todoCount} itens`;
-        document.getElementById('count-cart').innerText = `${cartCount} itens`;
-        document.getElementById('val-estimated').innerText = `R$ ${calculateEstimatedTotal().toFixed(2).replace('.', ',')}`;
-        document.getElementById('val-real').innerText = `R$ ${calculateRealTotal().toFixed(2).replace('.', ',')}`;
-
-        const monthMap = new Set();
-        const now = new Date();
-        monthMap.add(`${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`);
-        state.history.forEach(h => { const my = getMonthYearFromKey(h.date); if (my) monthMap.add(my); });
-
-        pillsContainer.innerHTML = '';
-        Array.from(monthMap).forEach(my => {
-            const [mStr, yStr] = my.split('/');
-            const button = document.createElement('button');
-            button.className = `pill ${state.selectedMonthYear === my ? 'active' : ''}`;
-            button.innerText = `${MONTH_NAMES[parseInt(mStr, 10) - 1]} / ${yStr}`;
-            button.onclick = () => { state.selectedMonthYear = my; save(); render(); };
-            pillsContainer.appendChild(button);
-        });
-
-        let totalSelectedMonth = 0;
-        historyContainer.innerHTML = '';
-        const filteredHistory = state.history.filter(h => getMonthYearFromKey(h.date) === state.selectedMonthYear);
-
-        filteredHistory.forEach(h => {
-            totalSelectedMonth += h.total;
+            const sub = item.qty * item.price;
             const div = document.createElement('div');
-            div.className = 'history-item';
-            div.innerHTML = `<span>📅 ${h.date}</span><b>R$ ${h.total.toFixed(2).replace('.', ',')}</b>`;
-            div.onclick = () => openHistoryViewModal(h);
-            historyContainer.appendChild(div);
+            div.className = `list-item ${item.checked ? 'checked' : ''}`;
+            div.innerHTML = `
+                <div class="checkbox ${item.checked ? 'checked' : ''}" onclick="event.stopPropagation(); toggleItem(${item.id})"></div>
+                <div class="item-info" onclick="openEditModal(${item.id})">
+                    <span class="item-name">${item.name}</span>
+                    <span class="item-details">${item.qty} ${item.type} x R$ ${item.price.toFixed(2)} = R$ ${sub.toFixed(2)}</span>
+                </div>
+                <button class="btn-icon" onclick="event.stopPropagation(); deleteItem(${item.id})">✕</button>
+            `;
+            if (item.checked) { cCount++; cart.appendChild(div); real += sub; } 
+            else { tCount++; todo.appendChild(div); est += sub; }
         });
 
-        if (filteredHistory.length === 0) historyContainer.innerHTML = `<div style="text-align:center; color:gray; padding:12px; font-size:0.85rem;">Nenhuma compra.</div>`;
-        document.getElementById('total-month').innerText = `R$ ${totalSelectedMonth.toFixed(2).replace('.', ',')}`;
+        document.getElementById('count-todo').innerText = `${tCount} itens`;
+        document.getElementById('count-cart').innerText = `${cCount} itens`;
+        document.getElementById('val-estimated').innerText = `R$ ${est.toFixed(2).replace('.', ',')}`;
+        document.getElementById('val-real').innerText = `R$ ${real.toFixed(2).replace('.', ',')}`;
+
+        // Histórico Simplificado
+        const container = document.getElementById('history-container');
+        container.innerHTML = '';
+        let mTotal = 0;
+        state.history.forEach(h => {
+            mTotal += h.total;
+            const d = document.createElement('div');
+            d.className = 'history-item';
+            d.innerHTML = `<span>📅 ${h.date}</span><b>R$ ${h.total.toFixed(2).replace('.', ',')}</b>`;
+            d.onclick = () => openHistoryViewModal(h);
+            container.appendChild(d);
+        });
+        document.getElementById('total-month').innerText = `R$ ${mTotal.toFixed(2).replace('.', ',')}`;
     }
 
-    function createItemElement(item, index) {
-        const div = document.createElement('div');
-        div.className = `list-item ${item.checked ? 'checked' : ''}`;
-        const subtext = item.type === 'un' ? `${item.qty} un x R$ ${item.price.toFixed(2)}` : `${item.qty.toFixed(3)} kg x R$ ${item.price.toFixed(2)}`;
-        div.innerHTML = `
-            <div class="checkbox ${item.checked ? 'checked' : ''}" onclick="event.stopPropagation(); toggleItem(${item.id})"></div>
-            <div class="item-info" onclick="openEditModal(${item.id})">
-                <span class="item-name">${index}. ${item.name}</span>
-                <span class="item-details">${subtext} = R$ ${(item.qty * item.price).toFixed(2)}</span>
-            </div>
-            <div class="item-actions"><button class="btn-icon" onclick="event.stopPropagation(); deleteItem(${item.id})">✕</button></div>
-        `;
-        return div;
-    }
-
-    let editingId = null;
+    let editId = null;
     function openEditModal(id) {
-        editingId = id; const item = state.items.find(i => i.id === id); if (!item) return;
-        document.getElementById('editTitle').innerText = item.name;
+        editId = id; const item = state.items.find(i => i.id === id); if (!item) return;
         document.getElementById('editType').value = item.type;
-        document.getElementById('editQty').value = item.type === 'kg' ? item.qty.toFixed(3) : item.qty;
+        document.getElementById('editQty').value = item.qty;
         document.getElementById('editPrice').value = item.price || '';
         document.getElementById('modalEdit').style.display = 'flex';
     }
 
-    function openHistoryViewModal(purchase) {
-        document.getElementById('historyViewTitle').innerText = `Compra de ${purchase.date}`;
-        document.getElementById('historyViewTotal').innerText = `R$ ${purchase.total.toFixed(2).replace('.', ',')}`;
-        const listContainer = document.getElementById('historyViewList'); listContainer.innerHTML = '';
-        if (purchase.items) {
-            purchase.items.forEach(i => {
-                const row = document.createElement('div'); row.className = 'history-preview-row';
-                row.innerHTML = `<div><b>${i.name}</b><br><span>${i.qty} ${i.type} x R$ ${i.price.toFixed(2)}</span></div><div><b>R$ ${(i.qty * i.price).toFixed(2)}</b></div>`;
-                listContainer.appendChild(row);
+    function openHistoryViewModal(h) {
+        document.getElementById('historyViewTitle').innerText = `Compra ${h.date}`;
+        document.getElementById('historyViewTotal').innerText = `R$ ${h.total.toFixed(2)}`;
+        const list = document.getElementById('historyViewList'); list.innerHTML = '';
+        if(h.items) {
+            h.items.forEach(i => {
+                const r = document.createElement('div'); r.className = 'history-preview-row';
+                r.innerHTML = `<span>${i.name} (${i.qty}${i.type})</span><b>R$ ${(i.qty*i.price).toFixed(2)}</b>`;
+                list.appendChild(r);
             });
         }
         document.getElementById('modalHistoryView').style.display = 'flex';
     }
 
-    // Gerenciador da Seta de Instalação (PWA)
-    let deferredPrompt;
-    function setupInstallationTrigger() {
-        const installBtn = document.getElementById('installApp');
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            if (installBtn) installBtn.style.display = 'block';
-        });
-
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') installBtn.style.display = 'none';
-                    deferredPrompt = null;
-                }
-            });
-        }
+    let defPrompt;
+    function setupInstallation() {
+        const btn = document.getElementById('installApp');
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); defPrompt = e; btn.style.display = 'block'; });
+        btn.onclick = async () => { if (defPrompt) { defPrompt.prompt(); const { outcome } = await defPrompt.userChoice; if (outcome === 'accepted') btn.style.display = 'none'; defPrompt = null; } };
     }
 
     function setupEventListeners() {
         const input = document.getElementById('itemInput');
-        const btnAdd = document.getElementById('btnAdd');
-        const suggestions = document.getElementById('suggestions');
-
-        btnAdd.onclick = () => { addItem(input.value); input.value = ''; suggestions.style.display = 'none'; };
-        input.onkeyup = (e) => {
-            if (e.key === 'Enter') { btnAdd.onclick(); return; }
-            const val = input.value.toLowerCase();
-            if (val.length < 1) { suggestions.style.display = 'none'; return; }
-            const matches = Object.keys(state.itemBank).filter(name => name.includes(val));
-            if (matches.length > 0) {
-                suggestions.innerHTML = '';
-                matches.forEach(m => {
-                    const d = document.createElement('div'); d.className = 'suggestion-item'; d.innerText = m;
-                    d.onclick = () => { input.value = m; suggestions.style.display = 'none'; btnAdd.onclick(); };
-                    suggestions.appendChild(d);
-                });
-                suggestions.style.display = 'block';
-            } else { suggestions.style.display = 'none'; }
-        };
-
-        document.getElementById('btnCancelEdit').onclick = () => { document.getElementById('modalEdit').style.display = 'none'; };
+        document.getElementById('btnAdd').onclick = () => { addItem(input.value); input.value = ''; };
+        input.onkeyup = (e) => { if (e.key === 'Enter') { addItem(input.value); input.value = ''; } };
+        document.getElementById('btnCancelEdit').onclick = () => document.getElementById('modalEdit').style.display = 'none';
         document.getElementById('btnSaveEdit').onclick = () => {
-            updateItem(editingId, { type: document.getElementById('editType').value, qty: document.getElementById('editQty').value, price: parseFloat(document.getElementById('editPrice').value) || 0 });
+            updateItem(editId, { type: document.getElementById('editType').value, qty: parseFloat(document.getElementById('editQty').value)||1, price: parseFloat(document.getElementById('editPrice').value)||0 });
             document.getElementById('modalEdit').style.display = 'none';
         };
         document.getElementById('btnFinish').onclick = finishPurchase;
-        document.getElementById('btnCloseHistoryView').onclick = () => { document.getElementById('modalHistoryView').style.display = 'none'; };
-        
+        document.getElementById('btnCloseHistoryView').onclick = () => document.getElementById('modalHistoryView').style.display = 'none';
         document.getElementById('btnBackup').onclick = () => {
-            const blob = new Blob([JSON.stringify(state, null, 2)], { type: "text/plain;charset=utf-8" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a"); a.href = url; a.download = `backup_compras.txt`; a.click();
+            const blob = new Blob([JSON.stringify(state)], { type: "text/plain" });
+            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `backup.txt`; a.click();
         };
-
         document.getElementById('btnRestore').onclick = () => {
-            const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = '.txt';
-            fileInput.onchange = e => {
-                const file = e.target.files[0]; if (!file) return;
-                const reader = new FileReader();
-                reader.onload = event => {
-                    try { state = JSON.parse(event.target.result); save(); render(); alert("Restaurado!"); } catch (err) { alert("Erro!"); }
-                };
-                reader.readAsText(file);
+            const i = document.createElement('input'); i.type = 'file';
+            i.onchange = e => {
+                const r = new FileReader(); r.onload = ev => { try { state = JSON.parse(ev.target.result); save(); render(); alert("Restaurado!"); } catch(ex){} };
+                r.readAsText(e.target.files[0]);
             };
-            fileInput.click();
+            i.click();
         };
-
-        document.getElementById('btnResetApp').onclick = () => { if (confirm("Zerar tudo?") && confirm("Certeza?")) { localStorage.clear(); location.reload(); } };
+        document.getElementById('btnResetApp').onclick = () => { if(confirm("Resetar?") && confirm("Certeza?")) { localStorage.clear(); location.reload(); } };
     }
 
     init();
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
-    }
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js').catch(err => console.log(err)); }
 </script>
 </body>
 </html>
