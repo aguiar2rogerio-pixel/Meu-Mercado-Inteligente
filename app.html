@@ -31,24 +31,42 @@
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-y: auto; /* Libera a rolagem nativa e fluida do telemóvel */
         }
 
         header {
             padding: 16px;
             background-color: var(--surface-color);
             border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
             z-index: 10;
         }
 
+        .header-title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
         h1 {
-            margin: 0 0 12px 0;
+            margin: 0;
             font-size: 1.2rem;
             font-weight: 600;
+            flex: 1;
             text-align: center;
+        }
+
+        #installApp {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            padding: 4px 8px;
+            cursor: pointer;
+            display: none; /* Aparece apenas quando o instalador estiver pronto */
         }
 
         .input-group {
@@ -107,10 +125,8 @@
         }
 
         main {
-            flex: 1;
-            overflow-y: auto;
             padding: 16px;
-            padding-bottom: 160px;
+            padding-bottom: 240px; /* Impede que o rodapé fixo cubra os últimos botões da lista */
         }
 
         section {
@@ -399,7 +415,11 @@
 <body>
 
 <header>
-    <h1>Lista de Compras</h1>
+    <div class="header-title-container">
+        <div style="width: 36px;"></div> <!-- Alinhador central -->
+        <h1>Lista de Compras</h1>
+        <button id="installApp" title="Instalar Aplicativo">📥</button>
+    </div>
     <div class="input-group">
         <input type="text" id="itemInput" placeholder="Adicionar item (ex: Leite)" autocomplete="off">
         <button class="btn-add" id="btnAdd">+</button>
@@ -441,6 +461,13 @@
         <div class="backup-controls">
             <button class="btn-cancel" id="btnBackup" style="font-size: 0.85rem; padding: 10px;">💾 Criar Backup</button>
             <button class="btn-cancel" id="btnRestore" style="font-size: 0.85rem; padding: 10px;">🔄 Restaurar</button>
+        </div>
+
+        <!-- Tag de Privacidade corrigida dentro do fluxo sem quebrar o HTML -->
+        <div style="text-align: center; padding: 20px 0;">
+            <a href="privacidade.html" style="font-size: 10px; color: #555; text-decoration: underline; text-transform: uppercase; letter-spacing: 1px;">
+                Política de Privacidade
+            </a>
         </div>
     </section>
 </main>
@@ -540,6 +567,7 @@
 
         render();
         setupEventListeners();
+        setupPWAInstaller();
     }
 
     function save() {
@@ -811,6 +839,29 @@
         document.getElementById('modalHistoryView').style.display = 'flex';
     }
 
+    let deferredPrompt;
+    function setupPWAInstaller() {
+        const installBtn = document.getElementById('installApp');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (installBtn) installBtn.style.display = 'block';
+        });
+
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        installBtn.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                }
+            });
+        }
+    }
+
     function setupEventListeners() {
         const input = document.getElementById('itemInput');
         const btnAdd = document.getElementById('btnAdd');
@@ -953,7 +1004,6 @@
 
     init();
 
-    // Vinculação limpa do Service Worker externo arquivo dedicado (sw.js)
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js')
         .then(reg => console.log('SW ativo com sucesso!', reg))
@@ -963,11 +1013,4 @@
 
 </body>
 </html>
-<!-- Link para Política de Privacidade -->
-<div class="text-center py-6">
-    <a href="privacidade.html" class="text-[10px] text-zinc-600 underline uppercase tracking-widest hover:text-emerald-500 transition-colors">
-        Política de Privacidade
-    </a>
-</div>
-
 
