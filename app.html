@@ -32,7 +32,7 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            overflow-y: auto; /* Garante a rolagem nativa e suave no telemóvel */
+            overflow-y: auto;
         }
 
         header {
@@ -66,7 +66,7 @@
             font-size: 1.3rem;
             padding: 4px 8px;
             cursor: pointer;
-            display: none; /* Só aparece quando o navegador confirmar que pode ser instalado */
+            display: none;
         }
 
         .input-group {
@@ -126,7 +126,7 @@
 
         main {
             padding: 16px;
-            padding-bottom: 240px; /* Margem de segurança para o conteúdo não sumir sob o footer */
+            padding-bottom: 240px;
         }
 
         section {
@@ -186,11 +186,13 @@
 
         .item-info {
             flex: 1;
+            min-w-0;
         }
 
         .item-name {
             font-weight: 500;
             display: block;
+            truncate: true;
         }
 
         .item-details {
@@ -416,7 +418,7 @@
 
 <header>
     <div class="header-title-container">
-        <div style="width: 36px;"></div> <!-- Elemento invisível para centralizar perfeitamente o título -->
+        <div style="width: 36px;"></div>
         <h1>Lista de Compras</h1>
         <button id="installApp" title="Instalar Aplicativo">📥</button>
     </div>
@@ -479,7 +481,6 @@
     <button class="btn-finish" id="btnFinish">Finalizar Compra</button>
     <button id="btnResetApp" style="background: none; border: 1px solid var(--danger-color); color: var(--danger-color); border-radius: 8px; padding: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 4px; opacity: 0.5;">ZERAR APLICATIVO (RESET TOTAL)</button>
     
-    <!-- Link de privacidade embutido de forma segura e elegante no design do rodapé -->
     <div style="text-align: center; margin-top: 2px;">
         <a href="privacidade.html" style="font-size: 9px; color: #555; text-decoration: underline; text-transform: uppercase; letter-spacing: 1px;">
             Política de Privacidade
@@ -528,7 +529,7 @@
     let state = {
         items: [], 
         history: [], 
-        itemBank: {}, // Estrutura legada: { nome: preco } ou Nova: { nome: { price, type } }
+        itemBank: {}, 
         selectedMonthYear: ""
     };
 
@@ -539,7 +540,6 @@
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
 
-    // Função auxiliar para capitalizar a primeira letra do produto
     function capitalizeName(name) {
         let trimmed = name.trim();
         if (!trimmed) return "";
@@ -581,11 +581,9 @@
     function addItem(name) {
         if (!name.trim()) return;
         
-        // CORREÇÃO: Salva e busca com a primeira letra maiúscula
         const formattedName = capitalizeName(name);
         const key = formattedName.toLowerCase();
         
-        // CORREÇÃO: Recupera o preço e o tipo salvos anteriormente do histórico
         let lastPrice = 0;
         let lastType = 'un';
 
@@ -594,7 +592,7 @@
                 lastPrice = state.itemBank[key].price || 0;
                 lastType = state.itemBank[key].type || 'un';
             } else {
-                lastPrice = state.itemBank[key]; // Compatibilidade com dados antigos salvos
+                lastPrice = state.itemBank[key];
             }
         }
         
@@ -627,7 +625,6 @@
             }
             state.items[idx] = { ...state.items[idx], ...updates };
             
-            // CORREÇÃO: Salva no banco de dados tanto o preço quanto o tipo (un ou kg) juntos
             const key = state.items[idx].name.toLowerCase();
             state.itemBank[key] = {
                 price: state.items[idx].price,
@@ -731,7 +728,6 @@
         let todoCount = 0;
         let cartCount = 0;
 
-        // CORREÇÃO: Ordena a lista principal "Para Comprar" e "No Carrinho" em ordem alfabética automaticamente
         const sortedItems = [...state.items].sort((a, b) => a.name.localeCompare(b.name));
 
         sortedItems.forEach(item => {
@@ -819,7 +815,7 @@
         div.innerHTML = `
             <div class="checkbox ${item.checked ? 'checked' : ''}" onclick="event.stopPropagation(); toggleItem(${item.id})"></div>
             <div class="item-info" onclick="openEditModal(${item.id})">
-                <span class="item-name">${index}. ${item.name}</span>
+                <span class="item-name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${index}. ${item.name}</span>
                 <span class="item-details">${subtext} = R$ ${(item.qty * item.price).toFixed(2)}</span>
             </div>
             <div class="item-actions">
@@ -854,7 +850,6 @@
         if (!purchase.items || purchase.items.length === 0) {
             listContainer.innerHTML = `<div style="text-align:center; color:gray; padding:20px;">Esta compra não possui listagem de itens salva.</div>`;
         } else {
-            // CORREÇÃO: Organiza os itens da janela do histórico por ordem alfabética também
             const sortedHistoryItems = [...purchase.items].sort((a, b) => a.name.localeCompare(b.name));
             
             sortedHistoryItems.forEach(i => {
@@ -918,7 +913,6 @@
                 return;
             }
 
-            // CORREÇÃO: Busca apenas itens que COMEÇAM com a letra digitada e põe em ordem alfabética
             const matches = Object.keys(state.itemBank)
                 .filter(name => name.startsWith(val))
                 .sort();
@@ -942,7 +936,6 @@
             }
         };
 
-        // Fecha as sugestões se clicar fora
         document.addEventListener('click', (e) => {
             if (e.target !== input) {
                 suggestions.style.display = 'none';
@@ -1053,4 +1046,3 @@
 
 </body>
 </html>
-
